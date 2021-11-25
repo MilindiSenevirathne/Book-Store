@@ -1,47 +1,74 @@
 package com.example.crud_backend.controller;
 
 
+
 import com.example.crud_backend.entity.Book;
-import com.example.crud_backend.repository.BookRepository;
+import com.example.crud_backend.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/")
 @CrossOrigin("*")
+@RestController
+@RequestMapping("api/v1/books")
 public class BookController {
 
     @Autowired
-    private BookRepository bookrepo;
+    private final BookService bookService;
 
-    @GetMapping("/books")
-    public List<Book> getAllBooks(){
-        return bookrepo.findAll();
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
     }
 
-    @PostMapping("/books")
-    public Book saveBookDetails(@RequestBody Book book){
-        return bookrepo.save(book);
+    @GetMapping
+    public List<Book> getAllBooks() {
+        return bookService.getBooks();
     }
 
-    @GetMapping("/books/{id}")
-    public Book getSingleBook(@PathVariable Long id){
-        return bookrepo.findById(id).get();
+    @GetMapping(path = "{id}")
+    public Book getBook(@PathVariable("id") Long id){return bookService.getBook(id);}
+
+    // build create book REST API
+    @PostMapping
+    public Book addNewBook(@RequestParam("file") MultipartFile file,
+                           @RequestParam("bookName") String bookName,
+                           @RequestParam("authorName") String authorName,
+                           @RequestParam("quantity") int quantity,
+                           @RequestParam("price") double price){
+
+        return bookService.addBook(file, bookName, authorName, quantity, price);
+
     }
 
-    @PutMapping("/books")
-    public Book updateBookDetails(@RequestBody Book book){
-        return bookrepo.save(book);
+    // build update book REST API
+    @PutMapping(path = "{bookId}")
+    public void updateBook(
+            @PathVariable("bookId") Long id,
+            @RequestParam(value="file" , required=false)MultipartFile file,
+            @RequestParam("bookName") String bookName,
+            @RequestParam("authorName") String authorName,
+            @RequestParam("quantity") int quantity,
+            @RequestParam("price") double price){
+        bookService.updateBook(file, id, bookName,authorName,price,quantity);
     }
 
-    @DeleteMapping("/books/{id}")
-    public ResponseEntity<HttpStatus> deleteBookById(@PathVariable Long id){
-        bookrepo.deleteById(id);
-        return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
+    // build delete book REST API
+    @DeleteMapping(path = "{bookId}")
+    public void deleteBook(@PathVariable("bookId") Long id){
+        bookService.deleteBookById(id);
+
     }
 }
 

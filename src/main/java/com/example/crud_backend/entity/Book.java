@@ -1,27 +1,34 @@
 package com.example.crud_backend.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "book")
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
+//@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Book {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "book_sequence",
+            sequenceName = "book_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "book_sequence"
+    )
+
     private long id;
-    @Column(name = "bookName")
     private String bookName;
-    @Column(name = "author")
-    private String author;
-    @Column(name = "quantity")
+    private String authorName;
     private int quantity;
-    @Column(name = "price")
     private double price;
+    private String invoicePath;
 }
