@@ -95,7 +95,7 @@ public class BookService {
 
         }
 
-        return path.toString();
+        return fileName;
     }
 
     public void deleteInvoice(String pathName){
