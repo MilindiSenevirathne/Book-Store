@@ -1,7 +1,6 @@
 package com.example.crud_backend.controller;
 
 
-
 import com.example.crud_backend.entity.Book;
 import com.example.crud_backend.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,11 +55,11 @@ public class BookController {
     @PutMapping(path = "{bookId}")
     public void updateBook(
             @PathVariable("bookId") Long id,
-            @RequestParam(value="file" , required=false)MultipartFile file,
-            @RequestParam("bookName") String bookName,
-            @RequestParam("authorName") String authorName,
-            @RequestParam("quantity") int quantity,
-            @RequestParam("price") double price){
+            @RequestParam(name="file" , required=false)MultipartFile file,
+            @RequestParam(name = "bookName",required = false) String bookName,
+            @RequestParam(name = "authorName",required = false) String authorName,
+            @RequestParam(name = "quantity",required = false) int quantity,
+            @RequestParam(name = "price",required = false) double price){
         bookService.updateBook(file, id, bookName,authorName,price,quantity);
     }
 
